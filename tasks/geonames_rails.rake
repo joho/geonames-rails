@@ -1,6 +1,6 @@
 namespace :geonames_rails do
   desc 'pull down the geonames data from the server'
-  task :pull_data do
+  task :pull_data => :environment do
     # do something here
     GeonamesRails::Puller.new.pull
   end

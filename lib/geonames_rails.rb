@@ -1,4 +1,5 @@
-require 'open_uri'
+require 'open-uri'
+require 'fileutils'
 
 module GeonamesRails
   class Puller
@@ -9,7 +10,7 @@ module GeonamesRails
       file_names.each do |file_name|
         url = "http://download.geonames.org/export/dump/#{file_name}"
       
-        remote_file = open('url')
+        remote_file = open(url)
 
         target_file_name = File.join(RAILS_ROOT, 'tmp', file_name)
         File.open target_file_name, 'w' do |f|
@@ -18,6 +19,14 @@ module GeonamesRails
         remote_file.close
         
         @temp_geonames_files << target_file_name
+        
+        file_base_name, file_extension = file_name.split('.')
+        if file_extension == 'zip'
+          unzipped_target_file_name = File.join(RAILS_ROOT, 'tmp', "#{file_base_name}.txt")
+          `unzip #{target_file_name} #{unzipped_target_file_name}`
+          @temp_geonames_files << unzipped_target_file_name
+        end
+        
       end
     end
     
