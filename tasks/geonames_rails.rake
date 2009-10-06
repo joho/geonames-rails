@@ -2,6 +2,7 @@ namespace :geonames_rails do
   desc 'pull down the geonames data from the server'
   task :pull_data do
     # do something here
+    GeonamesRails::Puller.new.pull
   end
   
   desc 'load geonames data into db'
