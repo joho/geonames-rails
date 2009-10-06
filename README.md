@@ -1,7 +1,7 @@
 Geonames-Rails
 ===
 
-I need a decent plugin that can do the following things
+I need a decent plugin that can do the following things with [the geonames database](http://www.geonames.org/)
 
   * generate a standard db migration
   * pull down the required geonames files from the web
@@ -18,3 +18,7 @@ TODO
 ---
   * actually put something in the db migrations
   * write the text -> AR converter
+
+---
+
+Copyright John Barton 2009
