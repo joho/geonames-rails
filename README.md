@@ -13,10 +13,11 @@ DONE
 
   * generators for the db migration & models
   * rake task that will pull the latest geonames data into tmp
+  * actually put something in the db migrations
 
 TODO
 ---
-  * actually put something in the db migrations
+
   * write the text -> AR converter
 
 ---
