@@ -61,7 +61,7 @@ class CreateGeonamesTables < ActiveRecord::Migration
       # [15] elevation : in meters, integer
       # [16] gtopo30 : average elevation of 30'x30' (ca 900mx900m) area in meters, integer
       # [17] timezone : the timezone id (see file timeZone.txt)
-      t.integer :timezone_id
+      t.integer :geonames_timezone_id
       # [18] modification date : date of last modification in yyyy-MM-dd format
     end
     
