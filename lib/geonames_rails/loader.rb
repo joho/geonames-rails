@@ -2,7 +2,8 @@ module GeonamesRails
   
   class Loader
     
-    def initialize(puller)
+    def initialize(puller, logger = nil)
+      @logger = logger || STDOUT
       @puller = puller
     end
     
@@ -18,6 +19,7 @@ module GeonamesRails
     
   protected
     def load_countries
+      log_message "opening countries file"
       File.open(File.join(RAILS_ROOT, 'tmp', 'countryInfo.txt'), 'r') do |f|
         f.each_line do |line|
           # skip comments
@@ -27,6 +29,8 @@ module GeonamesRails
 
           iso_code = country_mapping[:iso_code_two_letter]
           c = Country.find_or_initialize_by_iso_code_two_letter(iso_code)
+          
+          log_message "#{c.new_record? ? 'Creating' : 'Updating'} db record for #{iso_code}"
           
           c.attributes = country_mapping.only(:iso_code_two_letter,
                                               :iso_code_three_letter,
@@ -47,10 +51,13 @@ module GeonamesRails
     end
     
     def load_cities_file(city_file)
+      log_message "Loading city file #{city_file}"
       cities = []
       File.open(File.join(RAILS_ROOT, 'tmp', "#{city_file}.txt"), 'r') do |f|
         f.each_line { |line| cities << Mappings::City.new(line) }
       end
+      
+      log_message "#{cities.length} cities to process"
       
       cities_by_country_code = cities.group_by { |city_mapping| city_mapping[:country_iso_code_two_letters] }
       
@@ -58,6 +65,8 @@ module GeonamesRails
         cities = cities_by_country_code[country_code]
         
         country = Country.find_by_iso_code_two_letter(country_code)
+        
+        log_message "Processing #{country.name}(#{country_code}) with #{cities.length} cities"
 
         cities.each do |city_mapping|          
           city = City.find_or_initialize_by_geonames_id(city_mapping[:geonames_id])
@@ -72,6 +81,10 @@ module GeonamesRails
           city.save!
         end
       end
+    end
+    
+    def log_message(message)
+      @logger << message
     end
   end
 end

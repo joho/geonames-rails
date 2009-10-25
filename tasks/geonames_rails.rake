@@ -4,9 +4,8 @@ namespace :geonames_rails do
     GeonamesRails::Puller.new.pull
   end
   
-  desc 'load geonames data into db'
+  desc 'pull geonames data, load into db, then clean up after itself'
   task :pull_and_load_data => :environment do
-    # do something
     puller = GeonamesRails::Puller.new
     GeonamesRails::Loader.new(puller).load_data
   end
