@@ -23,7 +23,7 @@ module GeonamesRails
           # skip comments
           next if line.match(/^#/) || line.match(/^iso/i)
           
-          country_mapping = Mapping::Country.new(line)
+          country_mapping = Mappings::Country.new(line)
 
           iso_code = country_mapping[:iso_code_two_letter]
           c = Country.find_or_initialize_by_iso_code_two_letter(iso_code)
@@ -49,7 +49,7 @@ module GeonamesRails
     def load_cities_file(city_file)
       cities = []
       File.open(File.join(RAILS_ROOT, 'tmp', "#{city_file}.txt"), 'r') do |f|
-        f.each_line { |line| cities << Mapping::City.new(line) }
+        f.each_line { |line| cities << Mappings::City.new(line) }
       end
       
       cities_by_country_code = cities.group_by { |city_mapping| city_mapping[:country_iso_code_two_letters] }
