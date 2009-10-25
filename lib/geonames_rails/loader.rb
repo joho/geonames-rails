@@ -23,23 +23,18 @@ module GeonamesRails
           # skip comments
           next if line.match(/^#/) || line.match(/^iso/i)
           
-          country_elements = line.split("\t")
-          iso_code = country_elements[0]
+          country_mapping = Mapping::Country.new(line)
+
+          iso_code = country_mapping[:iso_code_two_letter]
           c = Country.find_or_initialize_by_iso_code_two_letter(iso_code)
-          c.attributes = { :iso_code_two_letter => iso_code,
-                           # [1] iso alpha3
-                           :iso_code_three_letter => country_elements[1],
-                           # [2] iso numeric
-                           :iso_number => country_elements[2],
-                           # [4] name
-                           :name => country_elements[4],
-                           # [5] capital
-                           :capital => country_elements[5],
-                           # [8] continent
-                           :continent => country_elements[8],
-                           # [16] Geoname id
-                           :geonames_id => country_elements[16]
-                         }
+          
+          c.attributes = country_mapping.only(:iso_code_two_letter,
+                                              :iso_code_three_letter,
+                                              :iso_number,
+                                              :name,
+                                              :capital,
+                                              :continent,
+                                              :geonames_id)
           c.save!
         end
       end
