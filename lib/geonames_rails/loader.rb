@@ -2,9 +2,10 @@ module GeonamesRails
   
   class Loader
     
-    def initialize(puller, logger = nil)
+    def initialize(puller, writer, logger = nil)
       @logger = logger || STDOUT
       @puller = puller
+      @writer = writer
     end
     
     def load_data
@@ -26,20 +27,10 @@ module GeonamesRails
           next if line.match(/^#/) || line.match(/^iso/i)
           
           country_mapping = Mappings::Country.new(line)
-
-          iso_code = country_mapping[:iso_code_two_letter]
-          c = Country.find_or_initialize_by_iso_code_two_letter(iso_code)
           
-          log_message "#{c.new_record? ? 'Creating' : 'Updating'} db record for #{iso_code}"
+          result = @writer.write_country(country_mapping)
           
-          c.attributes = country_mapping.slice(:iso_code_two_letter,
-                                               :iso_code_three_letter,
-                                               :iso_number,
-                                               :name,
-                                               :capital,
-                                               :continent,
-                                               :geonames_id)
-          c.save!
+          log_message result
         end
       end
     end
@@ -64,23 +55,9 @@ module GeonamesRails
       cities_by_country_code.keys.each do |country_code|
         cities = cities_by_country_code[country_code]
         
-        country = Country.find_by_iso_code_two_letter(country_code)
+        result = @writer.write_cities(country_code, cities)
         
-        log_message "Processing #{country.name}(#{country_code}) with #{cities.length} cities"
-
-        cities.each do |city_mapping|          
-          city = City.find_or_initialize_by_geonames_id(city_mapping[:geonames_id])
-          city.country = country
-          
-          city.attributes = city_mapping.slice(:name,
-                                               :latitude,
-                                               :longitude,
-                                               :country_iso_code_two_letters,
-                                               :population,
-                                               :geonames_timezone_id)
-          
-          city.save!
-        end
+        log_message result
       end
     end
     
