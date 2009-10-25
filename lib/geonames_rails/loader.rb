@@ -32,13 +32,13 @@ module GeonamesRails
           
           log_message "#{c.new_record? ? 'Creating' : 'Updating'} db record for #{iso_code}"
           
-          c.attributes = country_mapping.only(:iso_code_two_letter,
-                                              :iso_code_three_letter,
-                                              :iso_number,
-                                              :name,
-                                              :capital,
-                                              :continent,
-                                              :geonames_id)
+          c.attributes = country_mapping.slice(:iso_code_two_letter,
+                                               :iso_code_three_letter,
+                                               :iso_number,
+                                               :name,
+                                               :capital,
+                                               :continent,
+                                               :geonames_id)
           c.save!
         end
       end
@@ -72,11 +72,12 @@ module GeonamesRails
           city = City.find_or_initialize_by_geonames_id(city_mapping[:geonames_id])
           city.country = country
           
-          city.attributes = city_mapping.only(:name,
-                                              :latitude,
-                                              :longitude,
-                                              :country_iso_code_two_letters,
-                                              :geonames_timezone_id)
+          city.attributes = city_mapping.slice(:name,
+                                               :latitude,
+                                               :longitude,
+                                               :country_iso_code_two_letters,
+                                               :population,
+                                               :geonames_timezone_id)
           
           city.save!
         end
@@ -85,6 +86,7 @@ module GeonamesRails
     
     def log_message(message)
       @logger << message
+      @logger << "\n"
     end
   end
 end

@@ -35,7 +35,7 @@ module GeonamesRails
           # [14] population : integer
           :population => 14,
           # [15] elevation : in meters, integer
-          :elevation => 15
+          :elevation => 15,
           # [16] gtopo30 : average elevation of 30'x30' (ca 900mx900m) area in meters, integer,
           :average_elevation => 16,
           # [17] timezone : the timezone id (see file timeZone.txt)
