@@ -39,7 +39,7 @@ module GeonamesRails
           city.save!
         end
         
-        "Processed #{country.name}(#{country_code}) with #{cities.length} cities"
+        "Processed #{country.name}(#{country_code}) with #{city_mappings.length} cities"
       end
 
     end
