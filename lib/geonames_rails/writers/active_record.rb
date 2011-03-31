@@ -33,7 +33,6 @@ module GeonamesRails
                                                :latitude,
                                                :longitude,
                                                :country_iso_code_two_letters,
-                                               :population,
                                                :geonames_timezone_id)
         
           city.save!
